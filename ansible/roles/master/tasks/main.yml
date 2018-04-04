@@ -1,0 +1,23 @@
+---
+#Configure master
+- name: Copy config files
+  template: src=config.j2 dest=/etc/kubernetes/config
+  notify: Restart services
+
+- name: Copy etcd config
+  template: src=etcd.conf.j2 dest=/etc/etcd/etcd.conf
+  notify: Restart services
+
+- name: Copy apiserver config
+  template: src=apiserver.j2 dest=/etc/kubernetes/apiserver
+  notify: Restart services
+
+- meta: flush_handlers
+
+- name: Ensure kubernetes master is started and enabled
+  service: name={{item}} state=started enabled=yes
+  with_items:
+    - etcd
+    - kube-apiserver
+    - kube-controller-manager
+    - kube-scheduler

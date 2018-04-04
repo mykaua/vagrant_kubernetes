@@ -1,0 +1,18 @@
+---
+# Configure minions/nodes
+- name: Copy config files
+  template: src=config.j2 dest=/etc/kubernetes/config
+  notify: Restart services
+
+- name: Copy kubelet files
+  template: src=kubelet.j2 dest=/etc/kubernetes/kubelet
+  notify: Restart services
+
+- meta: flush_handlers
+
+- name: Ensure kubernetes node is started and enabled
+  service: name={{item}} state=started enabled=yes
+  with_items:
+    - kube-proxy
+    - kubelet
+    - docker

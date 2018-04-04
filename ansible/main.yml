@@ -1,0 +1,15 @@
+---
+- name: Install kubernetes and docker
+  hosts: all
+  roles:
+    - { role: configure, tags: configure}
+
+- name: Install master node
+  hosts: master
+  roles:
+    - { role: master, tags: master}
+
+- name: Install nodes
+  hosts: nodes
+  roles:
+    - { role: nodes, tags: nodes}

@@ -1,0 +1,18 @@
+---
+# preparation serves
+- name: Install ntpd
+  yum:
+    name: ntp
+    state: latest
+
+- name: copy hosts file
+  template: src=hosts.j2 dest=/etc/hosts
+
+- name: copy repo with kubernetes
+  template: src=virt7-docker-common-release.repo.j2 dest=/etc/yum.repos.d/virt7-docker-common-release.repo
+
+- name: install kubernetes
+  shell: yum install -y --enablerepo=virt7-docker-common-release kubernetes docker etcd
+
+- name: enable/start service
+  service: name=ntpd state=started enabled=yes
